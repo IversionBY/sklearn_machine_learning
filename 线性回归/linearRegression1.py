@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-# @Author: lypto
+# @Author: IversionBY
 # @Date:   2017-11-28 09:44:50
 # @Last Modified by:   IversionBY
-# @Last Modified time: 2017-11-29 19:33:36
+# @Last Modified time: 2017-12-01 09:52:34
 
 
 import matplotlib.pyplot as plt
@@ -13,35 +13,36 @@ from sklearn.linear_model import LinearRegression#导入进行线性回归的函
 from sklearn import metrics#导入计算均方等属性的函数
 from sklearn.model_selection import cross_val_predict#导入交叉验证函数
 from sklearn.preprocessing import StandardScaler#导入标准化函数
-
+from sklearn.externals import joblib#模型持久化
 
 def lineareg(X,y):
 
-	X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1)#拆分成训练集和测试集
+	X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=10)#拆分成训练集和测试集
 	#进行参数标准化
 	stdsc=StandardScaler()
 	X_train_std=stdsc.fit_transform(X_train)
-	X_test_std=stdsc.transform(X_train)
+	X_test_std=stdsc.transform(X_test)
 
 	#进行线性回归拟合
 	linreg = LinearRegression()
-	linreg.fit(X_train, y_train)#这一步是计算的核心步骤，实现梯度下降
+	linreg.fit(X_train_std, y_train)#这一步是计算的核心步骤，实现梯度下降
+	joblib.dump(linreg, "train_model_linreg.m")
 	theta0=linreg.intercept_#参数获取
 	theta=linreg.coef_
 
 	#模型拟合测试集
 	print("--------------------------------------------------------the test data are listed as follow")
-	y_pred = linreg.predict(X_test)#对所有测试集进行预测
+	y_pred = linreg.predict(X_test_std)#对所有测试集进行预测
 	# 用scikit-learn计算MSE,平均方差
-	print("MSE:",metrics.mean_squared_error(y_test, y_pred))
+	print("TSET_MSE:",metrics.mean_squared_error(y_test, y_pred))
 	# 用scikit-learn计算RMSE，平方差开根号
-	print ("RMSE:",np.sqrt(metrics.mean_squared_error(y_test, y_pred)))
+	print ("TEST_RMSE:",np.sqrt(metrics.mean_squared_error(y_test, y_pred)))
 	
 	#计算交叉检验的MSE以及RMSE
 	print("----------------------------------------------------------the follow are cv analyse")
 	predicted = cross_val_predict(linreg, X, y, cv=10)#十折交叉检验
-	print ("MSE:",metrics.mean_squared_error(y, predicted))
-	print ("RMSE:",np.sqrt(metrics.mean_squared_error(y, predicted)))
+	print ("CV_MSE:",metrics.mean_squared_error(y, predicted))
+	print ("CV_RMSE:",np.sqrt(metrics.mean_squared_error(y, predicted)))
 
 	#绘制回归直观图像
 	fig, ax = plt.subplots()
@@ -53,7 +54,7 @@ def lineareg(X,y):
 
 	plt.show()
 	theta=np.append(theta0,theta)
-	return theta
+	return theta#传回权重系数
 
 if __name__=="__main__":
 	'''
