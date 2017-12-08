@@ -2,7 +2,7 @@
 # @Author: IversionBY
 # @Date:   2017-11-29 19:40:24
 # @Last Modified by:   IversionBY
-# @Last Modified time: 2017-12-01 09:53:50
+# @Last Modified time: 2017-12-08 12:47:40
 
 '''
 本节数据是UCI上面的葡萄酒数据集，来实现对三种型号的葡萄酒分类
@@ -47,7 +47,7 @@ def logisticReg(X,y,alpha_set):
 	# 测试集用scikit-learn计算MSE,RMSE
 	print("test_MSE:",metrics.mean_squared_error(y_test, y_pred))
 	print ("test_RMSE:",np.sqrt(metrics.mean_squared_error(y_test, y_pred)))
-	#十折交叉集检验,本编程采用k折法，而NG的课堂告诉我们他采用的是handout法则
+	#十折交叉集检验,本编程采用k折法，而NG的课堂告诉我们他采用的是hand out法则
 	predicted = cross_val_predict(LR1, X, y, cv=10,n_jobs=1)
 	print ("CV_MSE:",metrics.mean_squared_error(y, predicted))
 	print ("CV_RMSE:",np.sqrt(metrics.mean_squared_error(y, predicted)))
@@ -55,7 +55,7 @@ def logisticReg(X,y,alpha_set):
 	print("precision:%.4f"%precision_score(y_true=y_test,y_pred=y_pred,average='macro'))
 	print("recall:%.4f"%recall_score(y_true=y_test,y_pred=y_pred,average='micro'))
 	print("F1:%.4f"% f1_score(y_true=y_test,y_pred=y_pred,average='weighted'))
-
+	#average后面的参数分别是多类别分类中的三种计算指标或者说方式
 	return LR1.intercept_,LR1.coef_
 
 
